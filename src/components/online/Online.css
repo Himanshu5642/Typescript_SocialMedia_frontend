@@ -1,0 +1,35 @@
+
+.FriendList{
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.individualFriend{
+    position: relative;
+}
+
+.individualFriend img{
+    width: 30px;
+    height: 30px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 0 10px;
+}
+
+.onlineshow{
+    width: 10px;
+    height: 10px;
+    background-color: limegreen;
+    border: 1px solid white;
+    border-radius: 50%;
+    position: absolute;  
+    top: -2px;
+    right: 8px;  
+}
+
+.username{
+    font-size: 17px;
+    font-weight: 600;
+}
+

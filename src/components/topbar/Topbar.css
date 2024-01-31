@@ -1,0 +1,86 @@
+.topBarContainer{
+    height: 50px;
+    width: 100%;
+    background: linear-gradient(antiquewhite 75%, white);
+    /* background-color: antiquewhite; */
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+}
+
+.logo{
+    text-decoration: none;
+    color: black;
+    font-size: 22px;
+    font-weight: 800;
+    margin-left: 30px;  
+    text-shadow: -2px -2px 10px rgb(161, 161, 161);
+}
+
+.topBarLeft{
+    flex: 3;
+}
+
+.topBarLeft h3{
+    font-size: 25px;
+    margin-left: 20px;
+}
+
+.topBarCenter{
+    flex: 5;
+}
+
+.topBarCenter input{
+    width: 70%;
+    height: 15px;
+    border-radius: 30px;
+    align-items: center;
+    border: none;
+    font-size: 17px;
+    padding: 10px;
+}
+
+.topBarCenter input:focus{
+    outline: none;
+}
+
+.topBarRight{
+    flex: 2;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+}
+
+.topBarIcon{
+    display: flex;
+}
+
+.iconLink{
+    font-size: 20px;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+.iconBadge{
+    position: relative;
+    background-color: red;
+    color: white;
+    width: 15px;
+    height: 15px;
+    font-size: 9px;
+    text-align: center;
+    border-radius: 50%;
+    border: 2px solid white;
+    top: 2px;
+    right: 20px;
+}
+
+.topBarRight img{
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+

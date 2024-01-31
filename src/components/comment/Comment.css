@@ -1,0 +1,110 @@
+.comment_section {
+  height: 100%;
+  width: 330px;
+  background-color: white;
+  position: fixed;
+  top: 49px;
+  right: 10px;
+  overflow-x: scroll;
+  z-index: 99;
+}
+
+.comment_section::-webkit-scrollbar{
+  width: 2px;
+}
+
+.comment_section::-webkit-scrollbar-track{
+  background-color: white;
+}
+
+.comment_section::-webkit-scrollbar-thumb{
+  background-color: rgb(216, 214, 214);
+  border-radius: 60px;
+}
+
+.comment_heading {
+  background-color: white;
+  text-align: center;
+  border-bottom: 2px solid black;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.close_comment {
+  float: right;
+  margin-top: 2px;
+  cursor: pointer;
+}
+
+.close_comment_section {
+  display: none;
+}
+
+.comment_box {
+  width: 300px;
+  background-color: white;
+  margin: 10px 0 0 10px;
+  padding: 5px;
+}
+
+.comment_profile_img {
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+}
+
+.comment_user_name {
+  font-weight: 600;
+}
+
+.comment_date {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.like_comment {
+  float: right;
+  position: relative;
+  top: 20px;
+  cursor: pointer;
+}
+
+.user_comment {
+  padding: 3px;
+  font-size: 14px;
+  margin: auto 10px auto 40px;
+}
+
+.comment_input_div {
+  display: flex;
+  background-color: white;
+  position: fixed;
+  bottom: 0;
+  width: inherit;
+  z-index: 1;
+}
+
+.comment_input {
+  border: 1px solid black;
+  border-right: 0;
+  width: 100%;
+  margin: 0 0 10px 0;
+  padding: 5px;
+}
+
+.comment_input:focus {
+  outline: none;
+}
+
+.comment_send {
+  position: relative;
+  right: 4px;
+  padding: 7px;
+  font-size: 20px;
+  border: 1px solid black;
+  border-left: 0;
+  margin: 0 0 10px 0;
+  cursor: pointer;
+  background-color: white;
+}

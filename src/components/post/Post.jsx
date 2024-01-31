@@ -78,7 +78,7 @@ const Post = ({ post }) => {
               className="comment_icon"
               onClick={toggleCommentModel}
             />
-            <span>{post.comments_count} comments</span>
+            <span onClick={toggleCommentModel}>{post.comments_count} comments</span>
           </div>
         </div>
       </div>

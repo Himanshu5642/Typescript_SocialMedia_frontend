@@ -1,7 +1,7 @@
 import React from 'react'
 import './Sidebar.css'
 import { Users } from '../../dummydata'
-import Closefriend from '../closefriend/Closefriend'
+import Chats from '../chats/Chats'
 
 
 const Sidebar = () => {
@@ -12,7 +12,7 @@ const Sidebar = () => {
             <hr className='hrLine'/>
             <ul className='sideFriends'>
               {Users.map((u)=>(
-                <Closefriend key={u.id} user={u} /> 
+                <Chats key={u.id} user={u} /> 
               ))}
             </ul>
         </div>

@@ -1,0 +1,12 @@
+.listFriends{
+    display: flex;
+    align-items: center;
+}
+
+.friendimg{
+    width: 32px;
+    margin-right: 10px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}

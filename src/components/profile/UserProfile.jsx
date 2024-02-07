@@ -3,30 +3,33 @@ import "./Profile.css";
 import Topbar from "../topbar/Topbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
-import { myProfile } from "../../api/userApiService";
-import { myPosts } from "../../api/postApiService";
+import { userProfile } from "../../api/userApiService";
+import { userPosts } from "../../api/postApiService";
+import { useLocation } from "react-router-dom";
 
-function Profile() {
+function UserProfile() {
   const [user, setUser] = useState({
     username: "",
   });
   const [posts, setPosts] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
-    const getMyProfile = async () => {
-      let response = await myProfile();
-      setUser(response.data);
+    const getUserProfile = async () => {
+      let response = await userProfile({ userId: location.state.userId });
+      setUser(response.data[0]);
     };
-    getMyProfile();
+    getUserProfile();
 
-    const getMyPosts = async () => {
-      let response = await myPosts({ type: "post" });
+    const getUserPosts = async () => {
+      let response = await userPosts({
+        userId: location.state.userId,
+        type: "post",
+      });
       setPosts(response.data);
     };
-    getMyPosts();
-  }, []);
-  // console.log(user);
-  console.log(posts);
+    getUserPosts();
+  }, [location.state.userId]);
 
   return (
     <>
@@ -70,11 +73,11 @@ function Profile() {
               alt=""
               className="post_area_img"
             />
-            ))}
+          ))}
         </div>
       </div>
     </>
   );
 }
 
-export default Profile;
+export default UserProfile;

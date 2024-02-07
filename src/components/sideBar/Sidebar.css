@@ -1,8 +1,6 @@
 .sidebar{
     flex: 2;
     background: linear-gradient(90deg, antiquewhite, white);
-    /* background-color: rgb(218, 215, 215); */
-    /* background-color: antiquewhite; */
     height: calc(100vh - 50px);
     overflow-y: scroll;
     position: sticky;
@@ -11,6 +9,7 @@
 
 .sidebar::-webkit-scrollbar{
     width: 5px;
+    display: none;
 }
 
 .sidebar::-webkit-scrollbar-track{
@@ -65,21 +64,7 @@
     list-style: none;
 }
 
-.listFriends{
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.friendimg{
-    width: 32px;
-    margin-right: 10px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-hr{
+.hrLine{
  width: 190px;
  border: 2px dashed black;
 }

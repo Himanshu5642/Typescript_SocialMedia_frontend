@@ -47,9 +47,9 @@ function Login() {
         withCredentials: true,
       });
       console.log(response);
-      let loggedInUser = response.data.res;
+      // let loggedInUser = response.data.res;
       let token = response.data.token;
-      localStorage.setItem("user", JSON.stringify(loggedInUser));
+      // localStorage.setItem("user", JSON.stringify(loggedInUser));
       localStorage.setItem("token", token);
       navigate("/");
     } catch (error) {
@@ -158,7 +158,12 @@ function Login() {
             type="file"
             name="profile_pic"
             className="form-control profile_pic_input"
-            onChange={(e) => setSigninInput((prev) => ({...prev, [e.target.name]: e.target.files[0].name}))}
+            onChange={(e) =>
+              setSigninInput((prev) => ({
+                ...prev,
+                [e.target.name]: e.target.files[0].name,
+              }))
+            }
           />
           <br />
           <input

@@ -2,13 +2,16 @@ import React, { useState } from "react";
 import "./Comment.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
-import { contentDateSwitchCase } from "../../helpers/dateSwitchCase.helpers";
 import { likeUnlikeComment } from "../../api/postApiService";
+import moment from "moment";
+
 
 function Comment({ comment }) {
   const [like, setLike] = useState(comment.like_count);
   // console.log(comment);
-
+  const contentCreatedAt = moment(comment.createdAt);
+  const monthsArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', "Jun", 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const contentMonth = monthsArr[contentCreatedAt.month()];
 
   const likeHandler = (commentId) => {
     const likeUnlike = async () => {
@@ -25,14 +28,14 @@ function Comment({ comment }) {
       <div className="comment_box">
         <img
           src={`uploads/${comment.user_id.profile_pic}`}
-          alt=""
+          alt="profile"
           className="comment_profile_img"
         />
         <span className="comment_user_name mx-2">
           {comment.user_id.username.trim().at(0).toUpperCase() +
             comment.user_id.username.slice(1)}
         </span>
-        <span className="comment_date">{contentDateSwitchCase(comment)}</span>
+        <span className="comment_date">{`${contentCreatedAt.date()} ${contentMonth}`}</span>
         <span className="like_comment">
           <FontAwesomeIcon
             icon={faHeart}

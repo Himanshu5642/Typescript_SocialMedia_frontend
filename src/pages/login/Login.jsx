@@ -17,7 +17,7 @@ function Login() {
     first_name: "",
     last_name: "",
     profile_pic: "",
-    phone: location.state.phone,
+    phone: location?.state?.phone,
     username: "",
     password: "",
     cpassword: "",

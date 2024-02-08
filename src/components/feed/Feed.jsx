@@ -88,9 +88,10 @@ const Feed = () => {
         <div className="comment_input_div">
           <input
             type="text"
-            name="comment"
+            name="content"
             className="comment_input"
             onChange={(e) => setContent(e.target.value)}
+            value={content}
           />
           <FontAwesomeIcon
             icon={faPaperPlane}

@@ -35,7 +35,7 @@
   color: black;
 }
 
-#profile_label{
+#profile_label {
   font-weight: 600;
 }
 
@@ -136,7 +136,6 @@
   display: block;
 }
 
-
 /*  verifyPhone  */
 
 .verificationBox {
@@ -159,7 +158,7 @@
 }
 
 .react-tel-input {
-  font-family: 'Roboto',sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 15px;
   position: relative;
   width: 0 !important;
@@ -173,6 +172,14 @@
   color: black;
   font-weight: 700;
   font-size: 16px;
+}
+
+.tick_icon {
+  position: relative;
+  left: 210px;
+  top: 6px;
+  height: 20px;
+  color: blue;
 }
 
 .phoneSubmitbtn {

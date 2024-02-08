@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import "./Login.css";
 import axios, { formDataAxios } from "../../api/axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function Login() {
   const [loginBtn, setLoginBtn] = useState(true);
   const [err, setErr] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const [loginInput, setLoginInput] = useState({
     username: "",
     password: "",
@@ -16,12 +17,12 @@ function Login() {
     first_name: "",
     last_name: "",
     profile_pic: "",
-    phone: 9898989866,
+    phone: location.state.phone,
     username: "",
     password: "",
     cpassword: "",
   });
-
+  console.log(signinInput);
   const onClickHandler = () => setLoginBtn(!loginBtn);
 
   const loginChangeHandler = (e) => {

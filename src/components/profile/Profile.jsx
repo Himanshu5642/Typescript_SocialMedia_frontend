@@ -26,7 +26,7 @@ function Profile() {
     getMyPosts();
   }, []);
   // console.log(user);
-  console.log(posts);
+  // console.log(posts);
 
   return (
     <>

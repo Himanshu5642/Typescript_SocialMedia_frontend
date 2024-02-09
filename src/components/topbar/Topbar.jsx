@@ -12,12 +12,12 @@ const Topbar = () => {
 
   const logOutHander = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    // localStorage.removeItem("user");
   };
 
   const searchUserHandler = async (e) => {
     let res = await search_user({ keyword: e.target.value });
-    console.log("users", res.data);
+    // console.log("users", res.data);
     e.target.value.length > 0 ? setsearchUser(res.data) : setsearchUser([]);
   };
 

@@ -16,9 +16,9 @@ function Comment({ comment }) {
   const likeHandler = (commentId) => {
     const likeUnlike = async () => {
       const liked = await likeUnlikeComment({ commentId });
-      console.log(liked.data);
+      // console.log(liked.data);
       setLike(liked.data.msg === "liked" ? like + 1 : like - 1);
-      console.log("like",like)
+      // console.log("like",like)
     };
     likeUnlike();
   };

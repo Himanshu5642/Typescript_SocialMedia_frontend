@@ -17,12 +17,12 @@ function Login() {
     first_name: "",
     last_name: "",
     profile_pic: "",
-    phone: location?.state?.phone,
+    phone: 0,
     username: "",
     password: "",
     cpassword: "",
   });
-  console.log(signinInput);
+  // console.log(signinInput);
   const onClickHandler = () => setLoginBtn(!loginBtn);
 
   const loginChangeHandler = (e) => {
@@ -47,7 +47,7 @@ function Login() {
       const response = await axios.post("/login", loginInput, {
         withCredentials: true,
       });
-      console.log(response);
+      // console.log(response);
       // let loggedInUser = response.data.res;
       let token = response.data.token;
       // localStorage.setItem("user", JSON.stringify(loggedInUser));
@@ -65,16 +65,19 @@ function Login() {
   const siginHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
+    formData.append("phone", location?.state?.phone);
     for (let key in signinInput) {
-      console.log(key, signinInput[key]);
+      // console.log(key, signinInput[key]);
       formData.append(key, signinInput[key]);
     }
     try {
       const response = await formDataAxios.post("/signUp", formData);
-      console.log(response);
+      // console.log(response);
+      let token = response.data.token;
+      localStorage.setItem("token", token);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setErr(error.response.data.body);
       setTimeout(() => {
         setErr(null);

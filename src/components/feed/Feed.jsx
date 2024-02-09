@@ -19,6 +19,7 @@ const Feed = () => {
   const [content, setContent] = useState("");
 
   useEffect(() => {
+    const ac = new AbortController();
     let posts = async () => {
       const res = await getAllPosts();
       setPosts(res.data);
@@ -30,7 +31,8 @@ const Feed = () => {
       setComments(res.data);
     };
     getComments();
-  }, [posts, commentPostId]);
+    return () => ac.abort();
+  }, [commentPostId]);
 
   const getCommentPostId = (id) => setCommentPostId(id);
 

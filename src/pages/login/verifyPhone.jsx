@@ -16,7 +16,7 @@ function Verification() {
   const navigate = useNavigate();
 
   const phoneChangeHandler = (value) => {
-    console.log(value);
+    // console.log(value);
     let country_code = value.slice(0, 2);
     let phoneNumber = value.slice(2);
     setCountry_code(country_code);
@@ -26,13 +26,13 @@ function Verification() {
   const verifyPhoneHandler = async (e) => {
     e.preventDefault();
     try {
-      console.log(country_code);
-      console.log(phoneNumber);
-      const response = await axios.post("/sendOtp", {
+      // console.log(country_code);
+      // console.log(phoneNumber);
+      await axios.post("/sendOtp", {
         country_code,
         phone: phoneNumber,
       });
-      console.log(response);
+      // console.log(response);
       // if(response.data.result)
       setOtpSent(true);
       setTimeout(() => {

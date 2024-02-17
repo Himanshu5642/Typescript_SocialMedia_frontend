@@ -11,9 +11,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import Comment from "../comment/Comment";
+import { BeatLoader } from "react-spinners";
+
+const override = {
+  display: "block",
+  margin: "50px auto",
+  borderColor: "red",
+};
 
 const Feed = () => {
   const [posts, setPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(false);
   const [commentPostId, setCommentPostId] = useState(null);
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState("");
@@ -23,6 +31,7 @@ const Feed = () => {
     let posts = async () => {
       const res = await getAllPosts();
       setPosts(res.data);
+      setPostsLoading(true);
     };
     posts();
 
@@ -56,10 +65,22 @@ const Feed = () => {
       <div className="feedWrapper">
         <Story />
         {posts.length === 0 ? (
-          <div className="h2 m-5">
-            <hr style={{ border: "1px solid black", width: "100%" }} />
-            No Posts
-          </div>
+          postsLoading ? (
+            <div className="h2 m-5">
+              <hr style={{ border: "1px solid black", width: "100%" }} />
+              No Posts
+            </div>
+          ) : (
+            <BeatLoader
+              color="#36d7b7"
+              loading={!postsLoading}
+              cssOverride={override}
+              size={20}
+              aria-label="Loading Spinner"
+              data-testid="loader"
+              
+            />
+          )
         ) : (
           posts.map((post) => (
             <Post

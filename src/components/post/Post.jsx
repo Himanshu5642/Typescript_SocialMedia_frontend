@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import "./Post.css";
-import { likeUnlikePost } from "../../api/postApiService";
+import { likeUnlikePost, deletePost } from "../../api/postApiService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faCommentDots } from "@fortawesome/free-regular-svg-icons";
+import {
+  faEllipsisVertical,
+  faPenToSquare,
+  faTrashCan,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 
 const Post = (props) => {
@@ -24,6 +30,7 @@ const Post = (props) => {
     "Dec",
   ];
   const contentMonth = monthsArr[contentCreatedAt.month()];
+  const [showListOfOpt, setShowListOfOpt] = useState(false);
 
   const likeHandler = (type, postId) => {
     const likeUnlike = async () => {
@@ -40,6 +47,10 @@ const Post = (props) => {
       commentSectionElement.classList.remove("close_comment_section");
   };
 
+  const deletePostHandler = async () => {
+    await deletePost(post._id);
+  };
+
   return (
     <div className="post">
       <div className="postWrap">
@@ -50,6 +61,32 @@ const Post = (props) => {
               post.user.username.slice(1)}
           </span>
           <span className="post_date">{`${contentCreatedAt.date()} ${contentMonth}`}</span>
+          {showListOfOpt && (
+            <div className="post_list_box">
+              <FontAwesomeIcon
+                icon={faPenToSquare}
+                id="post_list_update_icon"
+              />
+              |
+              <FontAwesomeIcon
+                icon={faTrashCan}
+                id="post_list_delete_icon"
+                onClick={deletePostHandler}
+              />
+              <FontAwesomeIcon
+                icon={faXmark}
+                id="post_list_cross_icon"
+                onClick={() => setShowListOfOpt(!showListOfOpt)}
+              />
+            </div>
+          )}
+          {!showListOfOpt && (
+            <FontAwesomeIcon
+              icon={faEllipsisVertical}
+              id="post_dots_icon"
+              onClick={() => setShowListOfOpt(!showListOfOpt)}
+            />
+          )}
         </div>
         <div className="postcenter">
           <img src={"/uploads/" + post.images[0]} alt="" />

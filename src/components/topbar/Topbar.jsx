@@ -38,6 +38,7 @@ const Topbar = () => {
         <input
           type="text"
           className="p-3 search_input"
+          placeholder="Search"
           onChange={searchUserHandler}
           onClick={searchBoxVisibile}
         />

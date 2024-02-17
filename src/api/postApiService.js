@@ -1,8 +1,8 @@
-import axios from "./axios";
+import axios, { formDataAxios } from "./axios";
 
 const addPost = async (data) => {
   try {
-    return await axios.post("/createPost");
+    return await formDataAxios.post("/createPost", data);
   } catch (error) {
     console.log(error.response.data.body);
   }
@@ -67,7 +67,7 @@ const updatePost = async (id) => {
 
 const deletePost = async (id) => {
   try {
-    return await axios.delete("/post");
+    return await axios.delete("/post/" + id);
   } catch (error) {
     console.log(error.response.data.body);
   }

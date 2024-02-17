@@ -1,11 +1,3 @@
-.form-control:focus {
-  color: var(--bs-body-color);
-  background-color: var(--bs-form-control-bg);
-  outline: 0;
-  border-color: black !important;
-  box-shadow: none;
-}
-
 .loginBox {
   width: 360px;
   height: 400px;
@@ -28,11 +20,18 @@
 }
 
 .inputForm {
-  border: none;
-  border-bottom: 2px solid black;
-  transition: 0.5s;
+  border: none !important;
+  border-bottom: 2px solid black !important;
+  transition: 0.5s !important;
   overflow: hidden;
-  color: black;
+}
+
+.form-control:focus {
+  color: var(--bs-body-color);
+  background-color: var(--bs-form-control-bg);
+  outline: 0;
+  border-color: black !important;
+  box-shadow: none !important;
 }
 
 #profile_label {

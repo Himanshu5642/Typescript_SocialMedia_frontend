@@ -39,7 +39,7 @@
 }
 
 .profile_pic_input {
-  width: 70%;
+  width: 67% !important;
   border: none;
 }
 

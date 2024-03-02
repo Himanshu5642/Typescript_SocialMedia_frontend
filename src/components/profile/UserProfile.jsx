@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./Profile.css";
 import Topbar from "../topbar/Topbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,30 +6,24 @@ import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 import { userProfile } from "../../api/userApiService";
 import { userPosts } from "../../api/postApiService";
 import { useLocation } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 function UserProfile() {
-  const [user, setUser] = useState({
-    username: "",
-  });
-  const [posts, setPosts] = useState([]);
   const location = useLocation();
 
-  useEffect(() => {
-    const getUserProfile = async () => {
-      let response = await userProfile({ userId: location.state.userId });
-      setUser(response.data[0]);
-    };
-    getUserProfile();
+  const { data: userData } = useQuery({
+    queryKey: ["user", location.state.userId],
+    queryFn: async () => await userProfile({ userId: location.state.userId }),
+  });
 
-    const getUserPosts = async () => {
-      let response = await userPosts({
+  const { data: userPostsData } = useQuery({
+    queryKey: ["myPost", location.state.userId],
+    queryFn: async () =>
+      await userPosts({
         userId: location.state.userId,
         type: "post",
-      });
-      setPosts(response.data);
-    };
-    getUserPosts();
-  }, [location.state.userId]);
+      }),
+  });
 
   return (
     <>
@@ -38,35 +32,35 @@ function UserProfile() {
         <div className="profile_image_section">
           <div className="profile_img_box">
             <img
-              src={`uploads/${user?.profile_pic}`}
+              src={`uploads/${userData?.data[0].profile_pic}`}
               alt="profile"
               className="profile_img"
             />
           </div>
           <div className="followers_box">
             <span>
-              {posts.length} <br /> posts
+              {userPostsData?.data.length} <br /> posts
             </span>
             <span>
-              {user?.followers_count || 0} <br /> followers
+              {userData?.data[0].followers_count || 0} <br /> followers
             </span>
             <span>
-              {user?.following_count || 0} <br /> following
+              {userData?.data[0].following_count || 0} <br /> following
             </span>
           </div>
         </div>
         <div className="profile_content_box">
           <h2>
-            {user?.username.length > 1
-              ? user?.username.trim().at(0).toUpperCase() +
-                user.username.slice(1)
-              : user?.username}
+            {userData
+              ? userData?.data[0].username.trim().at(0).toUpperCase() +
+                userData?.data[0].username.slice(1)
+              : userData?.data[0].username}
           </h2>
           <p></p>
         </div>
         <FontAwesomeIcon icon={faLayerGroup} className="profile_post_icon" />
         <div className="posts_section">
-          {posts.map((post) => (
+          {userPostsData?.data.map((post) => (
             <img
               key={post._id}
               src={`uploads/${post.images[0]}`}

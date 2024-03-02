@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Post from "../post/Post";
 import Story from "../story/Story";
 import "./Feed.css";
@@ -12,6 +12,7 @@ import { faCircleXmark } from "@fortawesome/free-regular-svg-icons";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import Comment from "../comment/Comment";
 import { BeatLoader } from "react-spinners";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const override = {
   display: "block",
@@ -20,28 +21,19 @@ const override = {
 };
 
 const Feed = () => {
-  const [posts, setPosts] = useState([]);
-  const [postsLoading, setPostsLoading] = useState(false);
+  const queryClient = useQueryClient();
   const [commentPostId, setCommentPostId] = useState(null);
-  const [comments, setComments] = useState([]);
   const [content, setContent] = useState("");
 
-  useEffect(() => {
-    const ac = new AbortController();
-    let posts = async () => {
-      const res = await getAllPosts();
-      setPosts(res.data);
-      setPostsLoading(true);
-    };
-    posts();
+  const { data: postsData, isLoading } = useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => await getAllPosts(),
+  });
 
-    let getComments = async () => {
-      const res = await getAllComments({ postId: commentPostId });
-      setComments(res.data);
-    };
-    getComments();
-    return () => ac.abort();
-  }, [commentPostId]);
+  const { data: commentsData } = useQuery({
+    queryKey: ["comments", commentPostId],
+    queryFn: async () => await getAllComments({ postId: commentPostId }),
+  });
 
   const getCommentPostId = (id) => setCommentPostId(id);
 
@@ -50,9 +42,14 @@ const Feed = () => {
     commentSectionElement.classList.add("close_comment_section");
   };
 
+  const newCommentMutation = useMutation({
+    mutationFn: addComment,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comments"] }),
+  });
+
   const newPostComment = async () => {
     console.log("new comment");
-    await addComment({
+    newCommentMutation.mutate({
       content_type: "post",
       content,
       content_id: commentPostId,
@@ -64,31 +61,29 @@ const Feed = () => {
     <div className="feed">
       <div className="feedWrapper">
         <Story />
-        {posts.length === 0 ? (
-          postsLoading ? (
-            <div className="h2 m-5">
-              <hr style={{ border: "1px solid black", width: "100%" }} />
-              No Posts
-            </div>
-          ) : (
-            <BeatLoader
-              color="#36d7b7"
-              loading={!postsLoading}
-              cssOverride={override}
-              size={20}
-              aria-label="Loading Spinner"
-              data-testid="loader"
-              
-            />
-          )
-        ) : (
-          posts.map((post) => (
+
+        {isLoading ? (
+          <BeatLoader
+            color="#36d7b7"
+            loading={isLoading}
+            cssOverride={override}
+            size={20}
+            aria-label="Loading Spinner"
+            data-testid="loader"
+          />
+        ) : postsData ? (
+          postsData?.data.map((post) => (
             <Post
               key={post._id}
               post={post}
               getCommentPostId={getCommentPostId}
             />
           ))
+        ) : (
+          <div className="h2 m-5">
+            <hr style={{ border: "1px solid black", width: "100%" }} />
+            No Posts
+          </div>
         )}
       </div>
 
@@ -101,13 +96,15 @@ const Feed = () => {
             onClick={closeCommentBoxHandler}
           />
         </h4>
-        {comments.length === 0 ? (
+
+        {commentsData?.data.length === 0 ? (
           <h4 className="comment_text">No Comments</h4>
         ) : (
-          comments.map((comment) => (
+          commentsData?.data.map((comment) => (
             <Comment key={comment._id} comment={comment} />
           ))
         )}
+
         <div className="comment_input_div">
           <input
             type="text"

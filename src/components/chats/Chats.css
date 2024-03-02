@@ -1,12 +1,138 @@
-.listFriends{
-    display: flex;
-    align-items: center;
+.chat_box {
+  cursor: pointer;
+  display: flex;
+  height: 50px;
+  padding: 0 5%;
+  overflow: hidden;
+  border-radius: 10%;
+  /* border-bottom: 1px solid black; */
 }
 
-.friendimg{
-    width: 32px;
-    margin-right: 10px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
+.chat_box_active {
+  box-shadow: antiquewhite 0px -23px 25px 0px inset,
+    antiquewhite 0px -36px 30px 0px inset, antiquewhite 0px -79px 40px 0px inset,
+    antiquewhite 0px 2px 1px 0px, rgba(0, 0, 0, 0.09) 0px 4px 2px 0px,
+    rgba(0, 0, 0, 0.09) 0px 8px 4px 0px, antiquewhite 0px 16px 8px 0px;
+}
+
+.listFriends {
+  align-self: center;
+}
+
+.friendimg {
+  width: 32px;
+  margin-right: 10px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.hr_chat_line {
+  margin: 4% 0;
+}
+
+/* ---- MessageModel ----- */
+
+.message_model {
+  width: 60%;
+  height: 92%;
+  background-color: white;
+  position: fixed;
+  top: 7.9%;
+  left: 20%;
+  border-radius: 17px;
+  padding: 10px 10px 50px 10px;
+  overflow-y: scroll;
+  border: 1px solid black;
+}
+
+.message_model::-webkit-scrollbar {
+  display: none;
+}
+
+.rightSideMessage {
+  justify-content: flex-end;
+}
+
+.message_header {
+  width: 100%;
+  height: 50px;
+  background-color: white;
+  display: flex;
+  position: sticky;
+  top: -10px;
+  border-bottom: 1px solid black;
+  z-index: 1;
+}
+
+.message_userProfile {
+  align-self: center;
+}
+
+.message_username {
+  align-self: center;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.close_chat_box {
+  height: 25px;
+  align-self: center;
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.messageBox {
+  display: flex;
+}
+
+.name_shown {
+  font-size: 12px;
+  font-weight: 500;
+  align-self: flex-start;
+}
+
+.text_pointer {
+  display: block;
+  position: absolute;
+  border-left: 10px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 13px solid antiquewhite;
+}
+
+.text_shown {
+  background-color: antiquewhite;
+  border-radius: 15px;
+  font-weight: 600;
+  padding: 2px 10px 5px;
+  margin-left: 2px;
+}
+
+.message_input_div {
+  display: flex;
+  background-color: white;
+  position: fixed;
+  bottom: 2px;
+  width: 59%;
+  z-index: 1;
+  border-radius: 6%;
+}
+
+#message_input {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border: 1px solid black;
+  border-right: 0;
+  width: 100%;
+  height:36px;
+  padding: 5px 10px;
+}
+
+#message_input:focus {
+  outline: none;
+}
+
+#message_send_icon {
+  border-end-end-radius: 10px;
+  border-top-right-radius: 10px;
 }

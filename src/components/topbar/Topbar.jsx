@@ -12,7 +12,7 @@ const Topbar = () => {
 
   const logOutHander = () => {
     localStorage.removeItem("token");
-    // localStorage.removeItem("user");
+    localStorage.removeItem("userId");
   };
 
   const searchUserHandler = async (e) => {

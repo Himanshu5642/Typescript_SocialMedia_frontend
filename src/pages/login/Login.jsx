@@ -1,92 +1,140 @@
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import "./Login.css";
 import axios, { formDataAxios } from "../../api/axios";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case "login_input":
+      return {
+        ...state,
+        loginInput: {
+          ...state.loginInput,
+          [action.field]: action.value,
+        },
+      };
+    case "signin_input":
+      return {
+        ...state,
+        signinInput: {
+          ...state.signinInput,
+          [action.field]: action.value,
+        },
+      };
+    case "login_btn":
+      return {
+        ...state,
+        loginBtn: !state.loginBtn,
+      };
+    case "add_file":
+      return { ...state, file: action.value };
+    default:
+      return state;
+  }
+};
 
 function Login() {
-  const [loginBtn, setLoginBtn] = useState(true);
+  const [state, dispatch] = useReducer(reducer, {
+    loginBtn: true,
+    loginInput: {},
+    signinInput: {},
+    file: null,
+  });
   const [err, setErr] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const [loginInput, setLoginInput] = useState({
-    username: "",
-    password: "",
-    rememberMe: false,
-  });
-  const [signinInput, setSigninInput] = useState({
-    first_name: "",
-    last_name: "",
-    profile_pic: "",
-    phone: 0,
-    username: "",
-    password: "",
-    cpassword: "",
-  });
-  // console.log(signinInput);
-  const onClickHandler = () => setLoginBtn(!loginBtn);
 
-  const loginChangeHandler = (e) => {
-    setLoginInput((prevInput) => ({
-      ...prevInput,
-      [e.target.name]: e.target.value,
-    }));
-  };
+  const onClickHandler = () => dispatch({ type: "login_btn" });
 
+  const loginChangeHandler = (e) =>
+    dispatch({
+      type: "login_input",
+      field: e.target.name,
+      value: e.target.value,
+    });
+
+  console.log("sigininput", state.signinInput);
   const signinChangeHandler = (e) => {
-    setSigninInput((prevInput) => ({
-      ...prevInput,
-      [e.target.name]: e.target.value,
-    }));
-  };
-  // console.log(loginInput);
-  // console.log(err);
-
-  const loginHandler = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post("/login", loginInput, {
-        withCredentials: true,
+    if (e.target.type === "file") {
+      console.log("file uploaded");
+      dispatch({
+        type: "signin_input",
+        field: e.target.name,
+        value: e.target.files[0],
       });
-      // console.log(response);
-      // let loggedInUser = response.data.res;
+      dispatch({
+        type: "add_file",
+        field: e.target.name,
+        value: e.target.files[0],
+      });
+    } else {
+      dispatch({
+        type: "signin_input",
+        field: e.target.name,
+        value: e.target.value,
+      });
+    }
+  };
+
+  const loginMutation = useMutation({
+    mutationFn: () =>
+      axios.post("/login", state.loginInput, {
+        withCredentials: true,
+      }),
+    onSuccess: (response) => {
+      console.log("response", response);
       let token = response.data.token;
-      // localStorage.setItem("user", JSON.stringify(loggedInUser));
+      let loggedInUserId = response.data.res._id;
+      localStorage.setItem("userId", loggedInUserId);
       localStorage.setItem("token", token);
       navigate("/");
-    } catch (error) {
+    },
+    onError: (error) => {
       console.log(error);
       setErr(error.response.data.body);
       setTimeout(() => {
         setErr(null);
       }, 7 * 1000);
-    }
+    },
+  });
+
+  const signinMutation = useMutation({
+    mutationFn: (formData) => formDataAxios.post("/signUp", formData),
+    onSuccess: (response) => {
+      let token = response.data.token;
+      let loggedInUserId = response.data.res._id;
+      localStorage.setItem("userId", loggedInUserId)
+      localStorage.setItem("token", token);
+      navigate("/");
+    },
+    onError: (error) => {
+      // console.log(error);
+      setErr(error.response.data.body);
+      setTimeout(() => {
+        setErr(null);
+      }, 7 * 1000);
+    },
+  });
+
+  const loginHandler = async (e) => {
+    e.preventDefault();
+    loginMutation.mutate();
   };
 
   const siginHandler = async (e) => {
     e.preventDefault();
     const formData = new FormData();
     formData.append("phone", location?.state?.phone);
-    for (let key in signinInput) {
+    for (let key in state.signinInput) {
       // console.log(key, signinInput[key]);
-      formData.append(key, signinInput[key]);
+      formData.append(key, state.signinInput[key]);
     }
-    try {
-      const response = await formDataAxios.post("/signUp", formData);
-      // console.log(response);
-      let token = response.data.token;
-      localStorage.setItem("token", token);
-      navigate("/");
-    } catch (error) {
-      // console.log(error);
-      setErr(error.response.data.body);
-      setTimeout(() => {
-        setErr(null);
-      }, 7 * 1000);
-    }
+    signinMutation.mutate(formData);
   };
 
   return (
-    <div className={loginBtn ? "loginBox" : "signinBox"}>
+    <div className={state.loginBtn ? "loginBox" : "signinBox"}>
       <div className="button-box">
         <button className="toggle-btn logintoggle" onClick={onClickHandler}>
           Log in
@@ -95,14 +143,16 @@ function Login() {
           Sign in
         </button>
         <button
-          className={loginBtn ? "move-btn" : "move-btn righttoggle"}
+          className={state.loginBtn ? "move-btn" : "move-btn righttoggle"}
         ></button>
       </div>
 
       <div
         id="loginForm"
         className={
-          loginBtn ? "container login loginform" : "container formpage login"
+          state.loginBtn
+            ? "container login loginform"
+            : "container formpage login"
         }
       >
         <form action="" className="mb-3 login-form">
@@ -134,7 +184,9 @@ function Login() {
       <div
         id="signinForm"
         className={
-          loginBtn ? "container formpage signin" : "container signin signupform"
+          state.loginBtn
+            ? "container formpage signin"
+            : "container signin signupform"
         }
       >
         <form action="" method="post" className="mb-3 login-form">
@@ -158,17 +210,21 @@ function Login() {
           <label htmlFor="profile_pic" id="profile_label">
             Profile Picture :
           </label>
-          <input
-            type="file"
-            name="profile_pic"
-            className="form-control profile_pic_input"
-            onChange={(e) =>
-              setSigninInput((prev) => ({
-                ...prev,
-                [e.target.name]: e.target.files[0].name,
-              }))
-            }
-          />
+          <div className="d-flex justify-content-between">
+            <input
+              type="file"
+              name="profile_pic"
+              className="form-control profile_pic_input"
+              onChange={signinChangeHandler}
+            />
+            {state.file && (
+              <img
+                alt=""
+                src={URL.createObjectURL(state.file)}
+                style={{ width: "10%" }}
+              />
+            )}
+          </div>
           <br />
           <input
             type="text"

@@ -10,8 +10,11 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+// import { FcLike } from "react-icons/fc";
 
 const Post = (props) => {
+  const queryClient = useQueryClient();
   const { post, getCommentPostId } = props;
   const [like, setLike] = useState(post.like_count);
   const contentCreatedAt = moment(post.createdAt);
@@ -47,8 +50,13 @@ const Post = (props) => {
       commentSectionElement.classList.remove("close_comment_section");
   };
 
+  const deletePostMutation = useMutation({
+    mutationFn: deletePost,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
+  });
+
   const deletePostHandler = async () => {
-    await deletePost(post._id);
+    deletePostMutation.mutate(post._id);
   };
 
   return (
@@ -99,6 +107,10 @@ const Post = (props) => {
               className="like_icon"
               onClick={() => likeHandler(post.content_type, post._id)}
             />
+            {/* <FcLike
+              className="like_icon_colored"
+              onClick={() => likeHandler(post.content_type, post._id)}
+            /> */}
             <span>{like} likes</span>
           </div>
           <div className="postbottomright">

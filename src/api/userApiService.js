@@ -1,33 +1,37 @@
 import axios from "./axios";
 
 const myProfile = async () => {
-  try {
-    return await axios.get("/profile");
-  } catch (error) {
-    console.log(error.response.data.body);
-  }
+  return axios
+    .get("/profile")
+    .then((res) => res)
+    .catch((error) => console.log(error.response.data.body));
 };
 
 const userProfile = async (query) => {
-  try {
-    return await axios.get("/userProfile", {
+  return axios
+    .get("/userProfile", {
       params: {
-        id: query.userId
-      }
-    });
-  } catch (error) {
-    console.log(error.response.data.body);
-  }
+        id: query.userId,
+      },
+    })
+    .then((res) => res)
+    .catch((error) => console.log(error.response.data.body));
 };
 
 const search_user = async (data) => {
-  try {
-    return await axios.post("/user/search", {
-      keyword: data.keyword
-    });
-  } catch (error) {
-    console.log(error.response.data.body);
-  }
+  return axios
+    .post("/user/search", {
+      keyword: data.keyword,
+    })
+    .then((res) => res)
+    .catch((error) => console.log(error.response.data.body));
 };
 
-export { myProfile, userProfile, search_user };
+const getAllOnlineUsers = async () => {
+  return axios
+    .get("/users/online")
+    .then((res) => res)
+    .catch((e) => console.log(e));
+};
+
+export { myProfile, userProfile, search_user, getAllOnlineUsers };

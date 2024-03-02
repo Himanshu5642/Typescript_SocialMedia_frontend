@@ -1,5 +1,6 @@
 .sidebar{
-    flex: 2;
+    /* flex: 2; */
+    width: 20%;
     background: linear-gradient(90deg, antiquewhite, white);
     height: calc(100vh - 50px);
     overflow-y: scroll;
@@ -23,10 +24,6 @@
 
 .sideWrap{
     padding: 20px;
-}
-
-.sideWrap hr{
-    margin-bottom: 20px;
 }
 
 .sideList{
@@ -58,10 +55,7 @@
 }
 
 .sideFriends{
-    padding-left: 20px;
-    margin: 0;
     font-size: 22px;
-    list-style: none;
 }
 
 .hrLine{

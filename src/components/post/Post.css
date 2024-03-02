@@ -85,6 +85,14 @@
 
 .like_icon {
   cursor: pointer;
+  font-size: 21px;
+  align-self: end;
+}
+
+.like_icon_colored {
+  cursor: pointer;
+  font-size: 20px;
+  position: absolute;
 }
 
 .postbottomright {

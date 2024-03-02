@@ -5,8 +5,10 @@ import { faCirclePlus } from "@fortawesome/free-solid-svg-icons";
 import { Button } from "react-bootstrap";
 import PostModal from "./MyModal";
 import { addPost } from "../../api/postApiService";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const Story = () => {
+  const queryClient = useQueryClient();
   const [showList, setShowList] = useState(false);
   const clickToWatchTheList = () => setShowList(!showList);
   const [showModal, setShowModal] = useState(false);
@@ -25,7 +27,7 @@ const Story = () => {
     // only_close_friends: false,
   });
   const [file, setFile] = useState(false);
-
+  // console.log("postInut", postInput)
   const newPostChangeHandler = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -40,6 +42,11 @@ const Story = () => {
     }
   };
 
+  const createPostMutation = useMutation({
+    mutationFn: addPost,
+    onSuccess: () => queryClient.invalidateQueries({queryKey: ['posts']})
+  })
+
   const newPost = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -47,8 +54,7 @@ const Story = () => {
       console.log(key, postInput[key]);
       formData.append(key, postInput[key]);
     }
-    let res = await addPost(formData);
-    console.log("res", res);
+    createPostMutation.mutate(formData);
     setShowModal(false);
     setPostInput({
       content_type: "post",
@@ -59,6 +65,7 @@ const Story = () => {
       visibility: "",
       caption: "",
     });
+    setFile(false);
   };
 
   return (

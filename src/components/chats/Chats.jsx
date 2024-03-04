@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Chats.css";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { newChatOpen } from "../../api/chatApiService";
+import { getFileUrl } from "../../config/firebase";
 // import { socket } from "../../socket";
 
 const Chats = ({ chat, receiver, dispatch }) => {
@@ -9,6 +10,7 @@ const Chats = ({ chat, receiver, dispatch }) => {
   const formattedUsername = (receiver?.username ?? "")
     .trim()
     .replace(/^\w/, (c) => c.toUpperCase());
+  const [profilePicImageUrl, setProfilePicImageUrl] = useState(null);
 
   const newChatOpenMutation = useMutation({
     mutationFn: newChatOpen,
@@ -21,12 +23,18 @@ const Chats = ({ chat, receiver, dispatch }) => {
     dispatch({ type: "pass_chat", payload: { chat } });
   };
 
+  (async function () {
+    await getFileUrl("profile", receiver?.profile_pic).then((res) =>
+      setProfilePicImageUrl(res)
+    );
+  })();
+
   return (
     <>
       <div className="chat_box" onClick={newChatHandler}>
         <span className="listFriends">
           <img
-            src={"uploads/" + receiver?.profile_pic}
+            src={profilePicImageUrl}
             alt=""
             className="friendimg"
           />

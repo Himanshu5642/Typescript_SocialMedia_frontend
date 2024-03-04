@@ -24,6 +24,9 @@ const Feed = () => {
   const queryClient = useQueryClient();
   const [commentPostId, setCommentPostId] = useState(null);
   const [content, setContent] = useState("");
+  const [showCommentModel, setShowCommentModel] = useState(false);
+
+  const getCommentPostId = (id) => setCommentPostId(id);
 
   const { data: postsData, isLoading } = useQuery({
     queryKey: ["posts"],
@@ -34,13 +37,9 @@ const Feed = () => {
     queryKey: ["comments", commentPostId],
     queryFn: async () => await getAllComments({ postId: commentPostId }),
   });
+  // console.log("commentsData", commentsData);
 
-  const getCommentPostId = (id) => setCommentPostId(id);
-
-  const closeCommentBoxHandler = () => {
-    let commentSectionElement = document.querySelector(".comment_section");
-    commentSectionElement.classList.add("close_comment_section");
-  };
+  const closeCommentBoxHandler = () => setShowCommentModel(false);
 
   const newCommentMutation = useMutation({
     mutationFn: addComment,
@@ -71,12 +70,13 @@ const Feed = () => {
             aria-label="Loading Spinner"
             data-testid="loader"
           />
-        ) : postsData ? (
+        ) : postsData?.data.length !== 0 ? (
           postsData?.data.map((post) => (
             <Post
               key={post._id}
               post={post}
               getCommentPostId={getCommentPostId}
+              setShowCommentModel={setShowCommentModel}
             />
           ))
         ) : (
@@ -87,39 +87,41 @@ const Feed = () => {
         )}
       </div>
 
-      <div className="comment_section close_comment_section">
-        <h4 className="comment_heading">
-          Comment Box{" "}
-          <FontAwesomeIcon
-            icon={faCircleXmark}
-            className="close_comment"
-            onClick={closeCommentBoxHandler}
-          />
-        </h4>
+      {showCommentModel && (
+        <div className="comment_section">
+          <h4 className="comment_heading">
+            Comment Box{" "}
+            <FontAwesomeIcon
+              icon={faCircleXmark}
+              className="close_comment"
+              onClick={closeCommentBoxHandler}
+            />
+          </h4>
 
-        {commentsData?.data.length === 0 ? (
-          <h4 className="comment_text">No Comments</h4>
-        ) : (
-          commentsData?.data.map((comment) => (
-            <Comment key={comment._id} comment={comment} />
-          ))
-        )}
+          {commentsData?.data.length === 0 ? (
+            <h4 className="comment_text">No Comments</h4>
+          ) : (
+            commentsData?.data.map((comment) => (
+              <Comment key={comment._id} comment={comment} />
+            ))
+          )}
 
-        <div className="comment_input_div">
-          <input
-            type="text"
-            name="content"
-            className="comment_input"
-            onChange={(e) => setContent(e.target.value)}
-            value={content}
-          />
-          <FontAwesomeIcon
-            icon={faPaperPlane}
-            className="comment_send"
-            onClick={newPostComment}
-          />
+          <div className="comment_input_div">
+            <input
+              type="text"
+              name="content"
+              className="comment_input"
+              onChange={(e) => setContent(e.target.value)}
+              value={content}
+            />
+            <FontAwesomeIcon
+              icon={faPaperPlane}
+              className="comment_send"
+              onClick={newPostComment}
+            />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

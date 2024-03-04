@@ -9,7 +9,9 @@ import MessageModel from "../chats/MessageModel";
 const reducer = (state, action) => {
   switch (action.type) {
     case "showMessageModel":
-      return { ...state, showMessageModel: !state.showMessageModel };
+      return { ...state, showMessageModel: true };
+    case "closeMessageModel":
+      return { ...state, showMessageModel: false };
     case "pass_chat":
       return { ...state, currentChat: action.payload.chat };
     default:

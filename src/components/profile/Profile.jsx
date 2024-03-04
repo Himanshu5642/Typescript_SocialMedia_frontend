@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Profile.css";
 import Topbar from "../topbar/Topbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,8 +6,12 @@ import { faLayerGroup } from "@fortawesome/free-solid-svg-icons";
 import { myProfile } from "../../api/userApiService";
 import { myPosts } from "../../api/postApiService";
 import { useQuery } from "@tanstack/react-query";
+import { getFileUrl } from "../../config/firebase";
+import AsyncImage from "./AsyncImage";
 
 function Profile() {
+  const [profilePicImageUrl, setProfilePicImageUrl] = useState(null);
+
   const { data: userData } = useQuery({
     queryKey: ["user"],
     queryFn: async () => await myProfile(),
@@ -18,6 +22,12 @@ function Profile() {
     queryFn: async () => await myPosts({ type: "post" }),
   });
 
+  (async function () {
+    await getFileUrl("profile", userData?.data.profile_pic).then((res) =>
+      setProfilePicImageUrl(res)
+    );
+  })();
+
   return (
     <>
       <Topbar />
@@ -25,7 +35,7 @@ function Profile() {
         <div className="profile_image_section">
           <div className="profile_img_box">
             <img
-              src={`uploads/${userData?.data.profile_pic}`}
+              src={profilePicImageUrl}
               alt="profile"
               className="profile_img"
             />
@@ -54,12 +64,7 @@ function Profile() {
         <FontAwesomeIcon icon={faLayerGroup} className="profile_post_icon" />
         <div className="posts_section">
           {myPostsData?.data.map((post) => (
-            <img
-              key={post._id}
-              src={`uploads/${post.images[0]}`}
-              alt=""
-              className="post_area_img"
-            />
+            <AsyncImage key={post._id} post={post} />
           ))}
         </div>
       </div>

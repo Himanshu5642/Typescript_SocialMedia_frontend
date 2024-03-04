@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-regular-svg-icons";
 import { likeUnlikeComment } from "../../api/postApiService";
 import moment from "moment";
+import { getFileUrl } from "../../config/firebase";
 
 
 function Comment({ comment }) {
@@ -12,6 +13,7 @@ function Comment({ comment }) {
   const contentCreatedAt = moment(comment.createdAt);
   const monthsArr = ['Jan', 'Feb', 'Mar', 'Apr', 'May', "Jun", 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const contentMonth = monthsArr[contentCreatedAt.month()];
+  const [profilePicImageUrl, setProfilePicImageUrl] = useState(null);
 
   const likeHandler = (commentId) => {
     const likeUnlike = async () => {
@@ -23,11 +25,17 @@ function Comment({ comment }) {
     likeUnlike();
   };
 
+  (async function () {
+    await getFileUrl("profile", comment.user_id.profile_pic).then((res) =>
+      setProfilePicImageUrl(res)
+    );
+  })();
+
   return (
     <div>
       <div className="comment_box">
         <img
-          src={`uploads/${comment.user_id.profile_pic}`}
+          src={profilePicImageUrl}
           alt="profile"
           className="comment_profile_img"
         />

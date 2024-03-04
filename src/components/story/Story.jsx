@@ -16,7 +16,7 @@ const Story = () => {
     content_type: "post",
     media_type: "",
     images: "",
-    category: "65a4ddf25693125174f0699c",
+    category: "65e58731b1871d281c93fa84",
     message: "",
     // visibility: "",
     caption: "",
@@ -44,8 +44,9 @@ const Story = () => {
 
   const createPostMutation = useMutation({
     mutationFn: addPost,
-    onSuccess: () => queryClient.invalidateQueries({queryKey: ['posts']})
-  })
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["posts"] }),
+  });
 
   const newPost = async (e) => {
     e.preventDefault();

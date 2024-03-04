@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import Online from "../online/Online";
 import "./Rightbar.css";
-// import { socket } from "../../socket";
 import { getAllOnlineUsers } from "../../api/userApiService";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { socket } from "../../socket";

@@ -6,6 +6,8 @@ import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllMessages } from "../../api/chatApiService";
 import { socket } from "../../socket";
+import { getFileUrl } from "../../config/firebase";
+import MessageBox from "./MessageBox";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -17,6 +19,8 @@ const reducer = (state, action) => {
           [action.field]: action.value,
         },
       };
+    case "receiverProfileImageUrl":
+      return { ...state, receiverProfilePicImageUrl: action.payload.url };
     default:
       return state;
   }
@@ -24,7 +28,10 @@ const reducer = (state, action) => {
 
 function MessageModel({ dispatchFunc, chat }) {
   let queryClient = useQueryClient();
-  const [state, dispatch] = useReducer(reducer, { textInput: { text: "" } });
+  const [state, dispatch] = useReducer(reducer, {
+    textInput: { text: "" },
+    receiverProfilePicImageUrl: null,
+  });
   const bottomMessageViewRef = useRef(null);
 
   const formattedUsername = (chat?.receivers[0].username ?? "")
@@ -44,7 +51,7 @@ function MessageModel({ dispatchFunc, chat }) {
       chatId: chat._id,
     });
   };
-  console.log("textinput", state.textInput);
+  // console.log("textinput", state.textInput);
 
   const sendMessageHandler = () => {
     dispatch({
@@ -70,11 +77,19 @@ function MessageModel({ dispatchFunc, chat }) {
       bottomMessageViewRef.current?.scrollIntoView();
   }, [queryClient, messageData?.data.length]);
 
+  useEffect(() => {
+    (async function () {
+      await getFileUrl("profile", chat?.receivers[0].profile_pic).then((res) =>
+        dispatch({ type: "receiverProfileImageUrl", payload: { url: res } })
+      );
+    })();
+  }, [chat?.receivers]);
+
   return (
     <div className="message_model">
       <div className="message_header">
         <img
-          src={"uploads/" + chat?.receivers[0].profile_pic}
+          src={state.receiverProfilePicImageUrl}
           alt=""
           className="message_userProfile friendimg"
         />
@@ -82,35 +97,14 @@ function MessageModel({ dispatchFunc, chat }) {
         <FontAwesomeIcon
           icon={faCircleXmark}
           className="close_chat_box"
-          onClick={() => dispatchFunc({ type: "showMessageModel" })}
+          onClick={() => dispatchFunc({ type: "closeMessageModel" })}
         />
       </div>
 
       {!isLoading &&
-        messageData?.data.map((message) => {
-          let isSender = message.sender._id === localStorage.getItem("userId");
-          return (
-            <div
-              key={message._id}
-              className={`messageBox ${isSender && "rightSideMessage"}`}
-            >
-              <img
-                src={"uploads/" + message.sender.profile_pic}
-                alt=""
-                className="message_userProfile friendimg"
-              />
-              <div>
-                <span className="name_shown">
-                  {message.sender.username
-                    .trim()
-                    .replace(/^\w/, (c) => c.toUpperCase())}
-                </span>
-                <span className="text_pointer"></span>
-                <p className="text_shown">{message.text}</p>
-              </div>
-            </div>
-          );
-        })}
+        messageData?.data.map((message) => (
+          <MessageBox key={message._id} message={message} />
+        ))}
       <div ref={bottomMessageViewRef}></div>
 
       <div className="message_input_div">

@@ -6,6 +6,8 @@ import Profile from "./components/profile/Profile";
 import UserProfile from "./components/profile/UserProfile";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { socket } from "./socket";
+// import dotenv from "dotenv";
+// dotenv.config();
 
 const queryClient = new QueryClient();
 

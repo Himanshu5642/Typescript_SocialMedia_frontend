@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 import "./Post.css";
-import { likeUnlikePost, deletePost } from "../../api/postApiService";
+import {
+  likeUnlikePost,
+  deletePost,
+  // convertFileToUrl,
+} from "../../api/postApiService";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faCommentDots } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -12,11 +16,11 @@ import {
 import moment from "moment";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 // import { FcLike } from "react-icons/fc";
+import { getFileUrl } from "../../config/firebase";
 
 const Post = (props) => {
   const queryClient = useQueryClient();
-  const { post, getCommentPostId } = props;
-  const [like, setLike] = useState(post.like_count);
+  const { post, getCommentPostId, setShowCommentModel } = props;
   const contentCreatedAt = moment(post.createdAt);
   const monthsArr = [
     "Jan",
@@ -34,20 +38,30 @@ const Post = (props) => {
   ];
   const contentMonth = monthsArr[contentCreatedAt.month()];
   const [showListOfOpt, setShowListOfOpt] = useState(false);
+  const [postImageUrl, setPostImageUrl] = useState(null);
+  const [profilePicImageUrl, setProfilePicImageUrl] = useState(null);
+
+  (async function () {
+    await getFileUrl("images", post.images[0]).then((res) =>
+      setPostImageUrl(res)
+    );
+    await getFileUrl("profile", post.user.profile_pic).then((res) =>
+      setProfilePicImageUrl(res)
+    );
+  })();
+
+  const likeUnlikeMutation = useMutation({
+    mutationFn: likeUnlikePost,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["posts"] }),
+  });
 
   const likeHandler = (type, postId) => {
-    const likeUnlike = async () => {
-      const liked = await likeUnlikePost({ type, postId });
-      setLike(liked.data.msg === "liked" ? like + 1 : like - 1);
-    };
-    likeUnlike();
+    likeUnlikeMutation.mutate({ type, postId });
   };
 
   const toggleCommentModel = () => {
     getCommentPostId(post._id);
-    let commentSectionElement = document.querySelector(".comment_section");
-    if (commentSectionElement.classList.contains("close_comment_section"))
-      commentSectionElement.classList.remove("close_comment_section");
+    setShowCommentModel(true);
   };
 
   const deletePostMutation = useMutation({
@@ -63,7 +77,7 @@ const Post = (props) => {
     <div className="post">
       <div className="postWrap">
         <div className="posttop">
-          <img src={"/uploads/" + post.user.profile_pic} alt="" />
+          <img src={profilePicImageUrl} alt="" />
           <span className="name_span">
             {post.user.username.trim().at(0).toUpperCase() +
               post.user.username.slice(1)}
@@ -97,7 +111,7 @@ const Post = (props) => {
           )}
         </div>
         <div className="postcenter">
-          <img src={"/uploads/" + post.images[0]} alt="" />
+          <img src={postImageUrl} alt="" />
           <div>{post.caption.slice(0, 40)}</div>
         </div>
         <div className="postbottom">
@@ -111,7 +125,7 @@ const Post = (props) => {
               className="like_icon_colored"
               onClick={() => likeHandler(post.content_type, post._id)}
             /> */}
-            <span>{like} likes</span>
+            <span>{post.like_count} likes</span>
           </div>
           <div className="postbottomright">
             <FontAwesomeIcon

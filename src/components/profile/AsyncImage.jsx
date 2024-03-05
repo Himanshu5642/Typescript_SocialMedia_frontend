@@ -4,13 +4,15 @@ import { getFileUrl } from "../../config/firebase";
 
 const AsyncImage = ({ post }) => {
   const [imageUrl, setImageUrl] = useState(null);
-
+  console.log("post", post)
   useEffect(() => {
+    const ac = new AbortController();
     const getImageUrl = async () => {
       const url = await getFileUrl("images", post.images[0]);
       setImageUrl(url);
     };
     getImageUrl();
+    return () => ac.abort();
   }, [post]);
 
   return imageUrl ? (
@@ -18,4 +20,4 @@ const AsyncImage = ({ post }) => {
   ) : null;
 };
 
-export default AsyncImage;
+export {AsyncImage};

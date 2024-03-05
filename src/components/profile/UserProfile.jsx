@@ -8,11 +8,10 @@ import { userPosts } from "../../api/postApiService";
 import { useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getFileUrl } from "../../config/firebase";
-import AsyncImage from "./AsyncImage";
+import {AsyncImage} from "./AsyncImage";
 
 function UserProfile() {
   const location = useLocation();
-  const [postImageUrl, setPostImageUrl] = useState(null);
   const [profilePicImageUrl, setProfilePicImageUrl] = useState(null);
 
   const { data: userData } = useQuery({
@@ -34,9 +33,6 @@ function UserProfile() {
       setProfilePicImageUrl(res)
     );
   })();
-
-  const getPostImageUrl = async (filename) =>
-    await getFileUrl("images", filename).then((res) => setPostImageUrl(res));
 
   return (
     <>

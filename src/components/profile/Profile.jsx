@@ -7,7 +7,7 @@ import { myProfile } from "../../api/userApiService";
 import { myPosts } from "../../api/postApiService";
 import { useQuery } from "@tanstack/react-query";
 import { getFileUrl } from "../../config/firebase";
-import AsyncImage from "./AsyncImage";
+import {AsyncImage} from "./AsyncImage";
 
 function Profile() {
   const [profilePicImageUrl, setProfilePicImageUrl] = useState(null);
@@ -17,7 +17,7 @@ function Profile() {
     queryFn: async () => await myProfile(),
   });
 
-  const { data: myPostsData } = useQuery({
+  const { data: myPostsData, isLoading } = useQuery({
     queryKey: ["myPost"],
     queryFn: async () => await myPosts({ type: "post" }),
   });
@@ -42,7 +42,7 @@ function Profile() {
           </div>
           <div className="followers_box">
             <span>
-              {myPostsData?.data.length} <br /> posts
+              {isLoading ? 0 : myPostsData?.data.length} <br /> posts
             </span>
             <span>
               {userData?.data.followers_count || 0} <br /> followers
